@@ -33,18 +33,28 @@ public class MapInterpreterController : MonoBehaviour
         return mapFiles[++currentMap];
     }
 
-    public TileTypes[][] parseMapFile(string relativePath) {
-        // fetch the map at the specific path given - to implement?
-        return null;
+    public TileTypes[,] parseMapFile(string mapText) {
+        // split the map by newlines
+        string[] mapRows = mapText.Split('\n');
+        int rows = mapRows.Length;
+        int columns = mapRows[0].Length;
+
+        TileTypes[,] parsedMap = new TileTypes[rows, columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                charsToTileTypes.TryGetValue(mapRows[i][j], out parsedMap[i, j]);
+            }
+        }
+        return parsedMap;
     }
 
-    public TileTypes[][] getNextMap() {
+    public TileTypes[,] getNextMap() {
         // fetch the next map in sequence
         string mapFilePath = getNextMapFile();
         // open it as a stream
         StreamReader sr = new StreamReader(mapFilePath);
         // parse the map and close stream
-        TileTypes[][] parsedMap = parseMapFile(sr.ReadToEnd());
+        TileTypes[,] parsedMap = parseMapFile(sr.ReadToEnd());
         sr.Close();
         return parsedMap;
     }
