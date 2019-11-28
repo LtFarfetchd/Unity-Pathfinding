@@ -1,6 +1,6 @@
 // a dictionary that can chain necessary operations for convenience
 using System.Collections.Generic;
-using TileTypes = MapInterpreterController.TileTypes;
+using TileTypes = MapParserController.TileTypes;
 
 public class CharToTileTypeDict : Dictionary<char, TileTypes> {
     // chain add

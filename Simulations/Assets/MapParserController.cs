@@ -2,7 +2,7 @@
 using UnityEngine;
 using CTTDict = CharToTileTypeDict;
 
-public class MapInterpreterController : MonoBehaviour
+public class MapParserController : MonoBehaviour
 {
     public enum TileTypes {
         TRAVERSABLE,
