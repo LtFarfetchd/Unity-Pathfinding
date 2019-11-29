@@ -15,13 +15,12 @@ public class MapParserController : MonoBehaviour
 
     public struct Scenario
     {
-        TileTypes[,] map;
-        int mapWidth, mapHeight, startX, startY, targetX, targetY;
-        float optimalLength;
+        public TileTypes[,] map;
+        public int startX, startY, targetX, targetY;
+        public float optimalLength;
 
         public Scenario(TileTypes[,] map, int startX, int startY, int targetX, int targetY, float optimalLength) {
             this.map = map;
-            this.mapWidth = map.GetLength(0); this.mapHeight = map.GetLength(1);
             this.startX = startX; this.startY = startY;
             this.targetX = targetX; this.targetY = targetY;
             this.optimalLength = optimalLength;
@@ -89,16 +88,20 @@ public class MapParserController : MonoBehaviour
 
     private Scenario[] parseScenarioFile(string scenarioText, TileTypes[,] map) {
         // note that a scenario file contains multiple 'scenarios'
-        string[] scenariosText = scenarioText.Split('\n');
-        Scenario[] scenarios = new Scenario[scenariosText.Length - 1];
-        for (int i = 1; i < scenariosText.Length; i++) { // skip first line of metadata
-            string[] scenarioComponents = scenariosText[i].Split(null);
+        // split the scenario file by newlines and remove 1 line of metadata
+        string[] fullScenText = scenarioText.Trim('\n').Split('\n'); // with metadata
+        string[] scenText = new string[fullScenText.Length - 1]; // without metadata
+        Array.Copy(fullScenText, 1, scenText, 0, scenText.Length);
+
+        Scenario[] scenarios = new Scenario[scenText.Length];
+        for (int i = 0; i < scenarios.Length; i++) { // skip first line of metadata
+            string[] scenarioComponents = scenText[i].Split(null);
             Scenario scen = new Scenario(
                 map, 
                 int.Parse(scenarioComponents[4]), int.Parse(scenarioComponents[5]),
                 int.Parse(scenarioComponents[6]), int.Parse(scenarioComponents[7]),
                 float.Parse(scenarioComponents[8]));
-            scenarios[i - 1] = scen;
+            scenarios[i] = scen;
         }
         return scenarios;
     }
