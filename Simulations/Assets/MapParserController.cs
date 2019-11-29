@@ -4,29 +4,11 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using CTTDict = CharToTileTypeDict;
+using TileTypes = Types.TileTypes;
+using Scenario = Types.Scenario;
 
 public class MapParserController : MonoBehaviour
 {
-    public enum TileTypes {
-        TRAVERSABLE,
-        NON_TRAVERSABLE,
-        OUT_OF_BOUNDS
-    }
-
-    public struct Scenario
-    {
-        public TileTypes[,] map;
-        public int startX, startY, targetX, targetY;
-        public float optimalLength;
-
-        public Scenario(TileTypes[,] map, int startX, int startY, int targetX, int targetY, float optimalLength) {
-            this.map = map;
-            this.startX = startX; this.startY = startY;
-            this.targetX = targetX; this.targetY = targetY;
-            this.optimalLength = optimalLength;
-        }
-    }
-
     private CTTDict charsToTileTypes = new CTTDict();
     private string mapDir;
     private string scenarioDir;

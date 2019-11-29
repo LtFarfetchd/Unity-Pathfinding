@@ -1,6 +1,6 @@
 ﻿
 using UnityEngine;
-using Scenario = MapParserController.Scenario;
+using Scenario = Types.Scenario;
 
 
 public class SceneSimulatorController : MonoBehaviour
