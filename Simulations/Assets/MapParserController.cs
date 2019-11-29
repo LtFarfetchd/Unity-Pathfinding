@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Linq;
+using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using CTTDict = CharToTileTypeDict;
@@ -54,27 +56,31 @@ public class MapParserController : MonoBehaviour
         scenarioDir = getDirectory("Scenarios");
 
         // create a list of the component file names
-        mapFiles = Directory.GetFiles(mapDir);
-        scenarioFiles = Directory.GetFiles(scenarioDir);
+        mapFiles = Directory.GetFiles(mapDir).Where(file => !file.EndsWith(".meta")).ToArray();
+        scenarioFiles = Directory.GetFiles(scenarioDir).Where(scen => !scen.EndsWith(".meta")).ToArray();
     }
 
     private string getNextMapFile() {
-        return mapDir + mapFiles[++currentMap];
+        return mapFiles[++currentMap];
     }
 
     private string getCurrentScenarioFile() {
-        return scenarioDir + scenarioFiles[currentMap];
+        return scenarioFiles[currentMap];
     }
 
     private TileTypes[,] parseMapFile(string mapText) {
-        // split the map by newlines
-        string[] mapRows = mapText.Split('\n');
+        // split the map by newlines and remove 4 lines of metadata
+        string[] fullMapRows = mapText.Trim('\n').Split('\n'); // with metadata
+        string[] mapRows = new string[fullMapRows.Length - 4]; // without metadata
+        Array.Copy(fullMapRows, 4, mapRows, 0, mapRows.Length);
+
         int rows = mapRows.Length;
         int columns = mapRows[0].Length;
 
         TileTypes[,] parsedMap = new TileTypes[rows, columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
+                // convert chars to TileTypes using dict
                 charsToTileTypes.TryGetValue(mapRows[i][j], out parsedMap[i, j]);
             }
         }
@@ -103,7 +109,8 @@ public class MapParserController : MonoBehaviour
         // open it as a stream
         StreamReader sr = new StreamReader(mapFilePath);
         // parse the map and close stream
-        TileTypes[,] parsedMap = parseMapFile(sr.ReadToEnd());
+        string mapText = sr.ReadToEnd();
+        TileTypes[,] parsedMap = parseMapFile(mapText);
         sr.Close();
         return parsedMap;
     }
@@ -115,7 +122,8 @@ public class MapParserController : MonoBehaviour
         string scenFilePath = getCurrentScenarioFile();
         // open stream and read contents
         StreamReader sr = new StreamReader(scenFilePath);
-        Scenario[] parsedScens = parseScenarioFile(sr.ReadToEnd(), map);
+        string scensText = sr.ReadToEnd();
+        Scenario[] parsedScens = parseScenarioFile(scensText, map);
         sr.Close();
         return parsedScens;
     }
