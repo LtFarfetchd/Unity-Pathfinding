@@ -22,14 +22,30 @@ public static class Types {
         }
     }
 
+    public struct Node {
+        // definition of a node within a map (does not form part of the map definition,
+        // is only used when executing an algorithm)
+        public int x;
+        public int y;
+        public float priority;
+        public Node (int x, int y, float priority) {
+            this.x = x; this.y = y; this.priority = priority;
+        }
+    }
+
+    public struct Action {
+        // definition of an action taken by a pathfinding algorithm on a node
+        // is given as a <node, action_type> double
+        
+    }
+
     public class Path {
         // definition of path (from source to target)
         // a 'path' represents a linked list node
-        private int x {get; set;}
-        private int y {get; set;}
+        private Node node {get; set;}
         private Path next {get; set;}
-        public Path (int x, int y) {
-            this.x = x; this.y = y;
+        public Path (Node node) {
+            this.node = node;
         }
     }
 }
